@@ -1,18 +1,19 @@
-// middleware.ts
+// proxy.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-// ⚠️ CRITICAL: Edge Runtime doesn't support 'jsonwebtoken' library
-// We'll use a simpler approach: just check if token exists
-// Role-based authorization will be handled in your AuthContext/components
 
 export function proxy(req: NextRequest) {
   const token = req.cookies.get("accessToken")?.value;
   const path = req.nextUrl.pathname;
 
-  console.log("All cookies:", req.cookies.getAll());
-  console.log("Token found:", !!token);
-  console.log("Path:", path);
+   // 🔍 DEBUG: Print ALL cookies in detail
+  // console.log("=== MIDDLEWARE DEBUG ===");
+  // console.log("Path:", path);
+  // console.log("All cookies:", JSON.stringify(req.cookies.getAll(), null, 2));
+  // console.log("Request headers cookie:", req.headers.get("cookie"));
+  // console.log("Token found:", !!token);
+  // console.log("=======================");
 
   // Public routes (allow without token)
   const publicPaths = [

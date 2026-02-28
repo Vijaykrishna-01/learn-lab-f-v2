@@ -6,7 +6,7 @@ import Loader from "../../../../components/spinner/Spinner";
 import { useRouter } from "next/navigation";
 import { toast } from "react-toastify";
 import "../styles/theme.css";
-import { useAuth } from "@/contexts/AuthContext";
+
 import { login } from "@/services/userApi";
 
 interface LoginProps {
@@ -19,7 +19,7 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
-  const { refreshUser } = useAuth();
+  // const { refreshUser } = useAuth();
 
   const handleLogin = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -63,16 +63,11 @@ const Login: React.FC<LoginProps> = ({ isOpen, onClose }) => {
           return;
       }
 
-      console.log("Redirecting to:", redirectPath);
-
-     
-      // console.log("User refreshed, now navigating...");
-
-      // // Give the browser time to persist the cookie before navigating
-      // await new Promise((resolve) => setTimeout(resolve, 100));
-
-
-      window.location.href = redirectPath;
+      // Redirect to the appropriate dashboard after login
+      // Give the browser a short delay to persist cookies if needed
+      setTimeout(() => {
+        router.push(redirectPath);
+      }, 100);
     } catch (err: any) {
       console.error("Login error:", err);
 

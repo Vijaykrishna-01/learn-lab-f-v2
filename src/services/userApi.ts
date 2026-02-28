@@ -25,20 +25,20 @@ export interface VerifyResponse {
 }
 
 // 🔐 Login
-export const login = async (
-  credentials: LoginPayload
-): Promise<LoginResponse> => {
-  const { data } = await axiosInstance.post<LoginResponse>(
-    "/auth/login",
-    credentials
-  );
+// export const login = async (
+//   credentials: LoginPayload
+// ): Promise<LoginResponse> => {
+//   const { data } = await axiosInstance.post<LoginResponse>(
+//     "/auth/login",
+//     credentials
+//   );
 
-  if (!data.success || !data.user) {
-    throw new Error(data.message || "Login failed");
-  }
+//   if (!data.success || !data.user) {
+//     throw new Error(data.message || "Login failed");
+//   }
 
-  return data;
-};
+//   return data;
+// };
 
 // ✅ Verify
 export const verify = async (): Promise<VerifyResponse> => {
@@ -52,10 +52,33 @@ export const verify = async (): Promise<VerifyResponse> => {
 };
 
 // 🚪 Logout
-export const logout = async () => {
-  await axiosInstance.post("/auth/logout");
+// export const logout = async () => {
+//   await axiosInstance.post("/auth/logout");
 
-  if (typeof window !== "undefined") {
-    localStorage.removeItem("user");
+//   if (typeof window !== "undefined") {
+//     localStorage.removeItem("user");
+//   }
+// };
+
+// services/userApi.ts
+
+// ✅ Call Next.js proxy, NOT the backend directly
+export const login = async (credentials: { email: string; password: string }) => {
+  const res = await fetch("/api/auth/login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(credentials),
+  });
+
+  if (!res.ok) {
+    const err = await res.json();
+    throw err;
   }
+
+  return res.json();
+};
+
+export const logout = async () => {
+  const res = await fetch("/api/auth/logout", { method: "POST" });
+  return res.json();
 };
