@@ -3,13 +3,13 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import styles from "./cart.module.scss";
+import styles from './cart.module.scss';
 import { RootState } from "@/redux/store";
 import { selectUserCart, setUserData } from "@/redux/slices/userSlice";
 import { removeCartItem, setCartItems, clearCart } from "@/redux/slices/cartSlice";
-import { 
-  createCheckoutSessionAPI, 
-  fetchCartCoursesAPI, 
+import {
+  createCheckoutSessionAPI,
+  fetchCartCoursesAPI,
   removeFromCartAPI
 } from "@/services/cartService";
 
@@ -17,14 +17,14 @@ interface Course {
   _id: string;
   title: string;
   image?: { url: string };
-  modules?: Array<{ 
+  modules?: Array<{
     _id?: string;
     title?: string;
-    lessons?: Array<{ 
-      _id?: string; 
-      title?: string; 
-      duration?: string | number 
-    }> 
+    lessons?: Array<{
+      _id?: string;
+      title?: string;
+      duration?: string | number
+    }>
   }>;
   price: number;
   averageRating: number;
@@ -40,27 +40,27 @@ interface UserData {
 
 const calculateCourseDuration = (course: Course): number => {
   if (!course.modules || !Array.isArray(course.modules)) return 0;
-  
+
   let totalMinutes = 0;
   course.modules.forEach(module => {
     if (module.lessons && Array.isArray(module.lessons)) {
       module.lessons.forEach(lesson => {
         if (lesson.duration) {
-          const durationNum = typeof lesson.duration === 'string' 
-            ? parseInt(lesson.duration, 10) 
+          const durationNum = typeof lesson.duration === 'string'
+            ? parseInt(lesson.duration, 10)
             : lesson.duration;
           totalMinutes += isNaN(durationNum) ? 0 : durationNum;
         }
       });
     }
   });
-  
+
   return totalMinutes / 60;
 };
 
 const getSafeRating = (course: Course): number => {
-  return course.averageRating && !isNaN(course.averageRating) 
-    ? course.averageRating 
+  return course.averageRating && !isNaN(course.averageRating)
+    ? course.averageRating
     : 0;
 };
 
@@ -71,7 +71,7 @@ export default function CartPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isProcessingCheckout, setIsProcessingCheckout] = useState(false);
-  
+
   const initialLoadRef = useRef(false);
 
   const userData = useSelector((state: RootState) => state.user.userData) as UserData | null;
@@ -88,7 +88,7 @@ export default function CartPage() {
     try {
       setLoading(true);
       setError(null);
-      
+
       if (userData.cart && userData.cart.length > 0) {
         const courses = await fetchCartCoursesAPI(userData.cart);
         dispatch(setCartItems(courses || []));
@@ -107,14 +107,14 @@ export default function CartPage() {
   useEffect(() => {
     if (!initialLoadRef.current && userData) {
       initialLoadRef.current = true;
-      
+
       if (cartItems.length === 0) {
         fetchCartCourses();
       } else {
         setLoading(false);
       }
     }
-    
+
     if (!userData) {
       setLoading(false);
     }
@@ -126,7 +126,7 @@ export default function CartPage() {
 
     try {
       setError(null);
-      
+
       dispatch(removeCartItem(courseId));
       const updatedCart = userCart.filter(id => id !== courseId);
       dispatch(setUserData({ ...userData!, cart: updatedCart }));
@@ -177,7 +177,7 @@ export default function CartPage() {
     const price = course.price && !isNaN(course.price) ? course.price : 0;
     return sum + price;
   }, 0);
-  
+
   const totalHours = cartItems.reduce((sum, course) => {
     return sum + calculateCourseDuration(course);
   }, 0);
@@ -200,7 +200,7 @@ export default function CartPage() {
     <div className={styles.cartDashboard}>
       <div className={styles.cartContainer}>
         <h2 className={styles.heading}>Shopping Cart</h2>
-        
+
         {error && (
           <div className={styles.errorBanner}>
             <p>{error}</p>
@@ -217,7 +217,7 @@ export default function CartPage() {
         {cartItems.length === 0 ? (
           <div className={styles.emptyCart}>
             <p>Your cart is empty</p>
-            <button 
+            <button
               onClick={() => router.push("/courses")}
               className={styles.browseBtn}
             >
@@ -253,7 +253,7 @@ export default function CartPage() {
                       <p className={styles.metadata}>
                         {safeRating.toFixed(1)} ⭐ • {moduleCount} Modules • {courseHours.toFixed(1)} Hours
                       </p>
-                      <button 
+                      <button
                         className={styles.removeBtn}
                         onClick={() => handleRemoveFromCart(course._id)}
                         disabled={isProcessingCheckout}
@@ -285,7 +285,7 @@ export default function CartPage() {
                   <span>Total:</span>
                   <span className={styles.totalPrice}>₹ {totalPrice.toLocaleString("en-IN")}</span>
                 </div>
-                <button 
+                <button
                   className={styles.checkoutBtn}
                   onClick={handleCheckout}
                   disabled={isProcessingCheckout || cartItems.length === 0}
@@ -297,8 +297,8 @@ export default function CartPage() {
               <div className={styles.promotions}>
                 <h3>Promotions</h3>
                 <div className={styles.couponInput}>
-                  <input 
-                    placeholder="Enter Coupon Code" 
+                  <input
+                    placeholder="Enter Coupon Code"
                     disabled={isProcessingCheckout}
                   />
                   <button disabled={isProcessingCheckout}>

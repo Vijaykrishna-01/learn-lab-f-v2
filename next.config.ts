@@ -1,13 +1,17 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   sassOptions: {
-    includePaths: ['./src/app/styles'],
+    includePaths: ["./src/app/styles"],
     modules: true,
   },
   images: {
-    domains: ['hips.hearstapps.com'],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "hips.hearstapps.com",
+      },
+    ],
   },
-  
 };
 
 export default nextConfig;
