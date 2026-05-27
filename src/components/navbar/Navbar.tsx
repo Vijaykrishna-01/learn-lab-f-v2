@@ -7,7 +7,7 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import DarkModeToggle from "@/components/ui/DarkModeToggle";
 
-import "./style/Navbar.css";
+import "@/components/navbar/style/Navbar.css";
 
 const LoginModal = dynamic(() => import("@/app/(public)/auth/login/Login"), {
   ssr: false,

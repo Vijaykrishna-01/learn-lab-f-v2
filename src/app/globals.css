@@ -2,7 +2,7 @@
 
 @plugin "tailwindcss-animate";
 
-/* removed invalid @custom-variant; define a custom 'dark' variant in tailwind.config.js via a plugin instead */
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* global.css */
 
@@ -29,6 +29,8 @@ body {
 }
 
  */
+
+
 
 @theme inline {
 

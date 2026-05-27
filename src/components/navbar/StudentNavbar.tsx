@@ -59,10 +59,10 @@ const StudentHeader = () => {
             <Link href={`/student/dashboard`}>Home</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/aboutus/${userId}`}>About Us</Link>
+            <Link href={`/aboutus`}>About Us</Link>
           </li>
           <li className="hidden md:block">
-            <Link href={`/student/contact/${userId}`}>Contact</Link>
+            <Link href={`/contact`}>Contact</Link>
           </li>
           <li className="hidden md:block">
             <Link href={`/student/mylearnings/${userId}`}>My Learnings</Link>
@@ -155,7 +155,7 @@ const StudentHeader = () => {
             </li>
             <li>
               <Link
-                href={`/student/aboutus/${userId}`}
+                href={`/about`}
                 onClick={() => setIsSidebarOpen(false)}
               >
                 About Us
@@ -163,7 +163,7 @@ const StudentHeader = () => {
             </li>
             <li>
               <Link
-                href={`/student/contact/${userId}`}
+                href={`/contact`}
                 onClick={() => setIsSidebarOpen(false)}
               >
                 Contact

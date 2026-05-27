@@ -14,6 +14,9 @@ import {
   FileCode,
   MonitorPlay,
   UserRoundCheck,
+  Star,
+  Clock,
+  Users,
 } from "lucide-react";
 import { RootState } from "@/redux/store"; // Adjust path if needed
 import styles from "./styles/home.module.scss";
@@ -131,39 +134,39 @@ const Page = () => {
   }, []);
 
   // Fetch courses
-useEffect(() => {
-  const fetchCourses = async () => {
-    try {
-      setLoading(true);
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        setLoading(true);
 
-      const url =
-        selectedCategory === "all"
-          ? ALL_COURSE_API
-          : `${ALL_COURSE_API}?category=${selectedCategory}`;
+        const url =
+          selectedCategory === "all"
+            ? ALL_COURSE_API
+            : `${ALL_COURSE_API}?category=${selectedCategory}`;
 
-      const response = await axios.get<Course>(url);
+        const response = await axios.get<Course>(url);
 
-      console.log("Fetched courses:", response);
+        console.log("Fetched courses:", response);
 
-      if (response.data.success) {
-        setCourses(response.data.courses);
-      } else {
-        setCourses([]);
+        if (response.data.success) {
+          setCourses(response.data.courses);
+        } else {
+          setCourses([]);
+        }
+      } catch (error: any) {
+        // Handle 404 "No courses found"
+        if (error.response?.status === 404) {
+          setCourses([]);
+        } else {
+          console.error("Error fetching courses:", error);
+        }
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      // Handle 404 "No courses found"
-      if (error.response?.status === 404) {
-        setCourses([]);
-      } else {
-        console.error("Error fetching courses:", error);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    };
 
-  fetchCourses();
-}, [selectedCategory]);
+    fetchCourses();
+  }, [selectedCategory]);
 
 
   const floatingIcons = [
@@ -357,7 +360,7 @@ useEffect(() => {
             ))}
           </div>
         </div>
-        
+
         {/* Courses Section */}
         <section className={styles.courses}>
           <h2>Most Selling Courses</h2>
@@ -381,8 +384,66 @@ useEffect(() => {
             <div className={styles.courseGrid}>
               {courses.map((course) => (
                 <div key={course._id} className={styles.courseCard}>
-                  <img src={course?.image?.url} alt={course.title} />
-                  <h4>{course.title}</h4>
+                  <div className={styles.image}>
+                    <img src={course?.image?.url} alt={course.title} />
+                    <div className={styles.badge}>
+                      {course.isBestseller && <span className={styles.bestseller}>Bestseller</span>}
+                      {course.isNew && <span className={styles.new}>New</span>}
+                      {course.discount > 30 && <span className={styles.hot}>🔥 Hot</span>}
+                    </div>
+                    <div className={styles.playOverlay}>
+                      <Play size={48} />
+                    </div>
+                  </div>
+
+                  <div className={styles.content}>
+                    <h4>{course.title}</h4>
+
+                    <div className={styles.instructor}>
+                      <span className={styles.instructorName}>{course.instructor?.name || 'Expert Instructor'}</span>
+                    </div>
+
+                    <div className={styles.rating}>
+                      <div className={styles.stars}>
+                        {[...Array(5)].map((_, i) => (
+                          <Star key={i} size={14} fill={i < Math.floor(course.rating || 4.5) ? '#fbbf24' : 'none'} />
+                        ))}
+                      </div>
+                      <span className={styles.ratingValue}>{course.rating || 4.5}</span>
+                      <span className={styles.reviewCount}>({course.totalStudents || 1234} students)</span>
+                    </div>
+
+                    <div className={styles.metaInfo}>
+                      <div className={styles.metaItem}>
+                        <Clock size={14} />
+                        <span>{course.duration || '8 hours'}</span>
+                      </div>
+                      <div className={styles.metaItem}>
+                        <Users size={14} />
+                        <span>{course.totalStudents?.toLocaleString() || '1,234'} students</span>
+                      </div>
+                    </div>
+
+                    <div className={styles.level}>
+                      {course.level || 'All Levels'}
+                    </div>
+
+                    <div className={styles.priceSection}>
+                      <div>
+                        <span className={styles.currentPrice}>${course.price || 49.99}</span>
+                        {course.originalPrice && (
+                          <span className={styles.originalPrice}>${course.originalPrice}</span>
+                        )}
+                      </div>
+                      {course.discount && (
+                        <span className={styles.discountBadge}>{course.discount}% OFF</span>
+                      )}
+                    </div>
+
+                    <button className={styles.enrollButton}>
+                      Enroll Now
+                    </button>
+                  </div>
                 </div>
               ))}
             </div>

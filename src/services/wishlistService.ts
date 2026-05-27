@@ -1,4 +1,5 @@
-import axiosInstance from "@/utils/axiosInstance";
+import axiosInstance from "@/lib/axios";
+
 
 
 export const addToWishlistAPI = async (courseId: string) => {
