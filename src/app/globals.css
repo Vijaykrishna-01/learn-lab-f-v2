@@ -243,5 +243,6 @@ body {
   }
   body {
     @apply bg-background text-foreground;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
 }
