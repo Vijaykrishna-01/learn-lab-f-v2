@@ -3,15 +3,9 @@
 import { useEffect, useState } from "react";
 // import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-// import jwtDecode from "jwt-decode";
-
-// import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-// import { clearCart, removeItem } from "@/redux/features/cartSlice";
-// import { addUserCourse, selectUserCourses } from "@/redux/features/userSlice";
-
-import styles from "./cart.module.scss";
 // import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { useDispatch } from "react-redux";
+import styles from './cart.module.scss';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { CART_ITEMS_API } from "@/utils/constants/api";
