@@ -3,7 +3,7 @@
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
-import styles from './cart.module.scss';
+// import styles from './cart.module.scss';
 import { RootState } from "@/redux/store";
 import { selectUserCart, setUserData } from "@/redux/slices/userSlice";
 import { removeCartItem, setCartItems, clearCart } from "@/redux/slices/cartSlice";

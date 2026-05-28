@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 // import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { useDispatch } from "react-redux";
-import styles from './cart.module.scss';
+// import styles from './cart.module.scss';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { CART_ITEMS_API } from "@/utils/constants/api";
