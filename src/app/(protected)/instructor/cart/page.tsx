@@ -1,11 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-// import { loadStripe } from "@stripe/stripe-js";
 import axios from "axios";
-// import { STRIPE_PAYMENT_API, UPDATE_COURSE_API, UPDATE_USER_DETAILS } from "@/utils/constants/api";
 import { useDispatch } from "react-redux";
-// import styles from './cart.module.scss';
 import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { CART_ITEMS_API } from "@/utils/constants/api";
@@ -37,16 +34,9 @@ interface Course {
   };
 }
 
-interface DecodedToken {
-  items: string[];
-  instructorIds: string[];
-}
-
 export default function Page() {
-  // const [isLoading, setIsLoading] = useState(false);
-  // const [isProcessingPayment, setIsProcessingPayment] = useState(false);
-  const [courses, setCourses] = useState<Course[]>([]); // To store fetched courses
-  const [loading, setLoading] = useState(true); // To track loading state
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const dispatch = useDispatch();
@@ -59,11 +49,10 @@ export default function Page() {
   useEffect(() => {
     const fetchCourses = async () => {
       if (userData && userData.cart && userData.cart.length > 0) {
-        setLoading(true); // Set loading to true before the request starts
+        setLoading(true);
         try {
-          // Send a POST request with the array of course IDs in the body
           const response = await axios.post(
-             CART_ITEMS_API,
+            CART_ITEMS_API,
             {
               ids: userData.cart,
             }
@@ -71,153 +60,79 @@ export default function Page() {
 
           console.log(response.data, "this is res");
 
-          setCourses(response?.data?.courses); // Assuming the response is an array of courses
+          setCourses(response?.data?.courses);
         } catch (err) {
           console.error("Error fetching courses:", err);
           setError((err instanceof Error ? err.message : "Something went wrong!") || "Something went wrong!");
         } finally {
-          setLoading(false); // Set loading to false when the request finishes
+          setLoading(false);
         }
       } else {
-        // If no courses in the cart, stop loading and show an empty state
         setCourses([]);
         setLoading(false);
       }
     };
 
-    fetchCourses(); // Fetch courses when component mounts or when `userData.cart` changes
+    fetchCourses();
   }, [userData.cart]);
-  // const cartItems = useSelector((state) => state.cart.cartItems);
-  // const userCourses = useSelector(selectUserCourses);
-
-  /** -----------------------------------------------
-   *  ✔ Get userId from Redux Persist (preferred)
-   *  ✔ fallback to localStorage if needed
-   ----------------------------------------------- */
-  // const userId =
-  //   useSelector((state) => state.user.userData?._id) ||
-  //   (typeof window !== "undefined" ? localStorage.getItem("userId") : null);
-
-  // const userRole = useSelector((state) => state.user.userData.role);
-
-  // const filteredItems =
-  //   cartItems
-  //     ?.filter((course: Course) => course.userId === userId)
-  //     ?.filter((course: Course) => !userCourses.includes(course._id)) || [];
-
-  //const PK = process.env.NEXT_PUBLIC_STRIPE_PK as string;
-
-  // const makePayment = async () => {
-  //   setIsLoading(true);
-  //   try {
-  //     const stripe = await loadStripe(PK);
-  //     const returnUrl = `${window.location.origin}/cart`;
-
-  //     const response = await fetch(STRIPE_PAYMENT_API, {
-  //       method: "POST",
-  //       headers: { "Content-Type": "application/json" },
-  //       body: JSON.stringify({ product: filteredItems, returnUrl }),
-  //     });
-
-  //     if (!response.ok) throw new Error("Checkout session creation failed");
-
-  //     const session = await response.json();
-  //     if (!session?.id) throw new Error("Invalid session response");
-
-  //     const result = await stripe?.redirectToCheckout({ sessionId: session.id });
-  //     if (result?.error) throw new Error(result.error.message);
-  //   } catch (err) {
-  //     console.error("Payment error:", err);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
-  /** -----------------------------------------------
-   *  ✔ Handle Stripe Redirect Success
-   ----------------------------------------------- */
-  // useEffect(() => {
-  //   const params = new URLSearchParams(window.location.search);
-  //   const isSuccess = params.get("success") === "true";
-  //   const token = params.get("token");
-
-  //   if (!isSuccess || !token || isProcessingPayment) return;
-
-  //   const handleSuccess = async () => {
-  //     setIsProcessingPayment(true);
-
-  //     try {
-  //       const decoded: DecodedToken = jwtDecode(token);
-  //       const itemIds = decoded.items || [];
-  //       const instructorIds = decoded.instructorIds || [];
-
-  //       dispatch(addUserCourse(itemIds));
-  //       dispatch(clearCart());
-
-  //       await axios.patch(`${UPDATE_USER_DETAILS}/${userId}`, { courses: itemIds });
-
-  //       for (const courseId of itemIds) {
-  //         await axios.patch(`${UPDATE_COURSE_API}/${courseId}`, { students: userId });
-  //       }
-
-  //       await Promise.all(
-  //         instructorIds.map((id) =>
-  //           axios.patch(`${UPDATE_USER_DETAILS}/${id}`, { students: [userId] })
-  //         )
-  //       );
-
-  //       window.location.href = `/${userRole}/${userId}`;
-  //     } catch (err) {
-  //       console.error("Payment processing error:", err);
-  //     } finally {
-  //       setIsProcessingPayment(false);
-  //     }
-  //   };
-
-  //   handleSuccess();
-  // }, [isProcessingPayment, userId, userRole, dispatch]);
 
   if (loading) {
-    return <div className={styles.loadingWrapper}>Loading...</div>;
+    return (
+      <div className="w-full h-screen flex justify-center items-center text-xl text-primary-500 dark:text-dark-text-primary">
+        Loading...
+      </div>
+    );
   }
 
   console.log(courses, "successs");
 
   return (
-    <div className={styles.cartDashboard}>
-      <div className={styles.cartContainer}>
-        <h2 className={styles.heading}>Shopping Cart</h2>
-        <p className={styles.subHeading}>
+    <div className="bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+      <div className="max-w-[82vw] mx-auto px-4 py-8 min-h-screen">
+        <h2 className="text-3xl font-semibold mb-4 text-gray-900 dark:text-gray-100">
+          Shopping Cart
+        </h2>
+        <p className="mb-4 text-gray-600 dark:text-gray-400">
           {courses.length} Course{courses.length > 1 ? "s" : ""} in cart
         </p>
 
-        <div className={styles.gridContainer}>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* ---------------------------- */}
           {/* CART ITEMS */}
           {/* ---------------------------- */}
-          <div className={styles.cartItems}>
+          <div className="lg:col-span-2 flex flex-col gap-4">
             {courses.length === 0 ? (
               <p>No items in cart</p>
             ) : (
               courses.map((course: Course) => {
                 return (
-                  <div className={styles.cartItem} key={course._id}>
+                  <div 
+                    className="flex items-center gap-4 p-4 rounded-lg bg-gray-50 dark:bg-gray-800 transition-all duration-300"
+                    key={course._id}
+                  >
                     <img
                       src={course.image?.url || "/placeholder.jpg"}
                       alt={course.title}
+                      className="w-52 h-24 object-cover rounded-lg"
                     />
 
-                    <div className={styles.details}>
-                      <h3>{course.title}</h3>
+                    <div className="flex-1">
+                      <h3 className="text-lg font-semibold mb-1 text-gray-900 dark:text-gray-100">
+                        {course.title}
+                      </h3>
 
-                      <p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">
                         By <strong>{course.instructorDetails?.name}</strong>
                       </p>
 
-                      <button>Remove from cart</button>
+                      <button className="mt-2 text-sm text-blue-500 hover:underline">
+                        Remove from cart
+                      </button>
                     </div>
 
-                    <p className={styles.price}>₹ {course.price}</p>
+                    <p className="text-lg font-semibold py-4 text-gray-900 dark:text-gray-100">
+                      ₹ {course.price}
+                    </p>
                   </div>
                 );
               })
@@ -227,19 +142,28 @@ export default function Page() {
           {/* ---------------------------- */}
           {/* CHECKOUT SECTION */}
           {/* ---------------------------- */}
-          <div className={styles.checkoutSection}>
-            <div className={styles.card}>
-              <h3>Total:</h3>
-              <p>₹ {courses.reduce((sum, c) => sum + c.price, 0)}</p>
-              <button>Checkout</button>
+          <div className="flex flex-col gap-4">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-all duration-300">
+              <h3 className="text-lg font-semibold mb-2">Total:</h3>
+              <p className="text-2xl font-bold">
+                ₹ {courses.reduce((sum, c) => sum + c.price, 0)}
+              </p>
+              <button className="w-full mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+                Checkout
+              </button>
             </div>
 
-            <div className={styles.promotions}>
-              <h3>Promotions</h3>
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 transition-all duration-300">
+              <h3 className="text-lg font-semibold">Promotions</h3>
 
-              <div style={{ display: "flex", gap: "10px", marginTop: "16px" }}>
-                <input placeholder="Enter Coupon" />
-                <button>Apply</button>
+              <div className="flex gap-2.5 mt-4">
+                <input 
+                  placeholder="Enter Coupon" 
+                  className="flex-1 px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100"
+                />
+                <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+                  Apply
+                </button>
               </div>
             </div>
           </div>
